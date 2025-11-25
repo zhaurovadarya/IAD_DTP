@@ -293,7 +293,7 @@ def main():
         plt.savefig("city_districts.png")
         plt.show()
         plt.close()
-        print("=== Средняя тяжесть ДТП по районам г. Новосибирска ===")
+        print("Средняя тяжесть ДТП по районам г. Новосибирска")
         print(city_df[['district', 'severity_score']])
 
         region_df = district_stats[district_stats['region_type'] == "Новосибирская область"].sort_values(
@@ -313,7 +313,7 @@ def main():
         plt.savefig("region_top10.png")
         plt.show()
         plt.close()
-        print("\n=== Топ-10 районов Новосибирской области по средней тяжести ДТП ===")
+        print("\nТоп-10 районов Новосибирской области по средней тяжести ДТП")
         print(region_df[['district', 'severity_score']])
 
         metrics_dict = {
@@ -346,7 +346,7 @@ def main():
 
 if __name__ == "__main__":
     results, geo_df = main()
-    print("=== Важности признаков (Top-10) ===")
+    print("Важности признаков (Top-10)")
     for k, df in results.items():
         if isinstance(df, pd.DataFrame):
             print(f"\n{k}:")

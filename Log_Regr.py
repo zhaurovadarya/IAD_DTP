@@ -108,21 +108,17 @@ def main():
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
 
-    # --- 1. ОТЧЁТ ПО КЛАССИФИКАЦИИ ---
-    print("\nОтчёт по классификации для городских наблюдений:")
+    print("\nОтчет по классификации для городских наблюдений:")
     class_report = classification_report(y_test, y_pred)
     print(class_report)
 
-    # --- 2. МАТРИЦА ОШИБОК ---
     print("\nМатрица ошибок:")
     conf_matrix = confusion_matrix(y_test, y_pred)
     print(conf_matrix)
 
-    # --- 3. ROC AUC ---
     roc_auc_val = roc_auc_score(y_test, y_prob)
     print("\nROC AUC:", roc_auc_val)
 
-    # --- 4. ROC-кривая ---
     fpr, tpr, thresholds = roc_curve(y_test, y_prob)
     plt.figure(figsize=(8, 6))
     plt.plot(fpr, tpr, label=f'ROC curve (AUC = {roc_auc_val:.3f})')
@@ -137,7 +133,6 @@ def main():
     plt.show()
     plt.close()
 
-    # --- 5. Важность признаков на реальных данных ---
     X_real = X.iloc[:len(data)]
     y_real = y.iloc[:len(data)]
     model_real = LogisticRegression(max_iter=1000)
@@ -151,10 +146,9 @@ def main():
     print("\nВажность признаков по городским наблюдениям:")
     print(feature_importance_real)
 
-    # --- 6. График коэффициентов ---
     plt.figure(figsize=(15, 6))
     sns.barplot(x='coef', y='feature', data=feature_importance_real, palette='coolwarm')
-    plt.title('Коэффициенты логистической регрессии, влияющих на возникновение ДТП по городским наблюдениям')
+    plt.title('Коэффициенты логистической регрессии, влияющих на возникновение ДТП по городским наблюдениям', fontsize=14)
     plt.xlabel('Коэффициент логистической регрессии', labelpad=15, fontsize=14)
     plt.ylabel('Признак', labelpad=15, fontsize=14)
     plt.xticks(fontsize=12)
@@ -166,7 +160,6 @@ def main():
     plt.show()
     plt.close()
 
-    # --- 7. Коэффициенты + отношение шансов ---
     coef_df = pd.DataFrame({
         'Признак': X_real.columns,
         'Коэффициент': model_real.coef_[0],
@@ -181,7 +174,6 @@ def main():
         print(
             f"!Признак '{row['Признак']}' {effect} вероятность ДТП примерно в {row['Отношение шансов (e^coef)']:.2f} раз")
 
-    # --- 8. Диаграмма распределения вероятностей ---
     plt.figure(figsize=(8, 6))
     sns.histplot(y_prob, bins=15, kde=True, alpha=0.6, edgecolor='black')
     plt.xlim(0, 1)
@@ -204,9 +196,9 @@ def main():
         "roc_auc": roc_auc_score(y_test, y_prob),
         "roc_plot": roc_path,
         "prob_dist_plot": prob_path,
-        "log_coef": feature_importance_real,     # важность на реальных данных
-        "coef_df": coef_df,                       # коэффициенты + отношение шансов
-        "coef_plot": coef_plot_path               # путь к PNG с коэффициентами
+        "log_coef": feature_importance_real,
+        "coef_df": coef_df,
+        "coef_plot": coef_plot_path
     },
     "log_coef": feature_importance_real
 }
