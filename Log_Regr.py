@@ -123,9 +123,11 @@ def main():
     plt.figure(figsize=(8, 6))
     plt.plot(fpr, tpr, label=f'ROC curve (AUC = {roc_auc_val:.3f})')
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve для городских наблюдений')
+    plt.xlabel('False Positive Rate', labelpad=15, fontsize=16)
+    plt.ylabel('True Positive Rate', labelpad=15, fontsize=16)
+    plt.title('ROC Curve для городских наблюдений', fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.legend()
 
     roc_path = "roc_city.png"
@@ -148,11 +150,11 @@ def main():
 
     plt.figure(figsize=(15, 6))
     sns.barplot(x='coef', y='feature', data=feature_importance_real, palette='coolwarm')
-    plt.title('Коэффициенты логистической регрессии, влияющих на возникновение ДТП по городским наблюдениям', fontsize=14)
-    plt.xlabel('Коэффициент логистической регрессии', labelpad=15, fontsize=14)
-    plt.ylabel('Признак', labelpad=15, fontsize=14)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.title('Коэффициенты логистической регрессии, влияющих на возникновение ДТП по городским наблюдениям', fontsize=16)
+    plt.xlabel('Коэффициент логистической регрессии', labelpad=15, fontsize=16)
+    plt.ylabel('Признак', labelpad=15, fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.tight_layout()
 
     coef_plot_path = "coef_importance_city.png"
@@ -178,9 +180,11 @@ def main():
     sns.histplot(y_prob, bins=15, kde=True, alpha=0.6, edgecolor='black')
     plt.xlim(0, 1)
     plt.xticks(np.linspace(0, 1, 11))
-    plt.xlabel('Вероятность ДТП', fontsize=12)
-    plt.ylabel('Количество участков', fontsize=12)
-    plt.title('Диаграмма распределения предсказанных вероятностей ДТП по городским наблюдениям', fontsize=14)
+    plt.xlabel('Вероятность ДТП', fontsize=16)
+    plt.ylabel('Количество участков', fontsize=16)
+    plt.title('Диаграмма распределения предсказанных вероятностей ДТП по городским наблюдениям', fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.grid(alpha=0.3)
     plt.tight_layout()
 

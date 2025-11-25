@@ -1,6 +1,7 @@
 from mlxtend.frequent_patterns import apriori, association_rules
 from tqdm import tqdm
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import warnings
@@ -98,20 +99,28 @@ for (pdd, f), count in pair_counts.items():
     else:
         matrix.loc[pdd, f] = 0.0
 plt.figure(figsize=(14, 7))
-sns.heatmap(matrix, annot=True, fmt=".2f", cmap='YlGnBu')
-plt.xlabel("Факторы", fontsize=14)
-plt.ylabel("Пункты ПДД", fontsize=14)
-plt.title("Сила связи факторов с пунктами ПДД", fontsize=14)
+
+# Рисуем тепловую карту
+sns.heatmap(matrix, annot=True, fmt=".2f", cmap='YlGnBu', cbar_kws={"shrink": 0.8})
+plt.xlabel("Факторы", fontsize=16)
+plt.ylabel("Пункты ПДД", fontsize=16)
+plt.title("Сила связи факторов с пунктами ПДД", fontsize=16)
+n = len(matrix.columns)
+plt.xticks(ticks=np.arange(n)+0.5, labels=np.arange(1, n+1), fontsize=14, rotation=0)
+plt.yticks(fontsize=14)
+
 plt.tight_layout()
 plt.show()
+
 
 theme_counts = proposals_df['themes'].str.split(', ').explode().value_counts() #
 plt.figure(figsize=(14, 6))
 theme_counts.head(20).plot(kind='bar', color='lightgreen')
-plt.ylabel("Количество совпадений", fontsize=14)
-plt.xlabel("Темы", fontsize=14)
-plt.title("Распределение совпадений по темам", fontsize=14)
-plt.xticks(rotation=45, ha='right')
+plt.ylabel("Количество совпадений", fontsize=16)
+plt.xlabel("Темы", fontsize=16)
+plt.title("Распределение совпадений по темам", fontsize=16)
+plt.xticks(rotation=45, ha='right',fontsize=14)
+plt.yticks(fontsize=14)
 plt.tight_layout()
 plt.show()
 

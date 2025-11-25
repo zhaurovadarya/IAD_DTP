@@ -107,12 +107,12 @@ def main():
         cbar_kws={'shrink': 0.8},
         annot_kws={'size': 14}
     )
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', va='top', fontsize=14)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', va='top', fontsize=16)
     ax.tick_params(axis='x', pad=15)
     ax.xaxis.tick_top()
 
 
-    ax.set_yticklabels(ax.get_yticklabels(), rotation=0, ha='right', va='center', fontsize=14)
+    ax.set_yticklabels(ax.get_yticklabels(), rotation=0, ha='right', va='center', fontsize=16)
     ax.tick_params(axis='y', pad=5)
 
     plt.title("Матрица корреляции для городских признаков", pad=30)
