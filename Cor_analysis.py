@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 
 def main():
-    # Подключение к БД
     engine = create_engine("postgresql+psycopg2://razrab:puk5@localhost:5432/DTP")
 
     query_gor = """
@@ -209,8 +208,6 @@ def main():
     corr_gor = df_grouped_gor[['speed', 'intensity', 'density', 'load_',
                                'average_distance_between_objects', 'accident_count_gor']].corr()
     corr_obl = df_combined[['outward', 'return', 'accident_count_obl']].corr()
-
-    # сохранение графиков
     plt.figure(figsize=(8, 6))
     sns.heatmap(
         corr_gor.rename(index=rename_map, columns=rename_map),
