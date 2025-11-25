@@ -104,18 +104,16 @@ def getDTPData(region_id, region_name, district_id, district_name, months, year)
         }
     }
 
-    # Настройка параметров запроса
     cards_dict["data"]["ParReg"] = region_id
     cards_dict["data"]["reg"] = district_id
-
     months_list = ["MONTHS:" + str(month) + "." + str(year) for month in months]
     cards_dict["data"]["date"] = months_list
 
     start = 1
-    increment = 50  # размер "страницы" данных
+    increment = 50
     json_data = None
 
-    # 🟩 Логируем начало обработки
+    # логируем начало обработки
     if len(months) == 1:
         log_text = u"Обрабатываются данные для {0} ({1}) за {2}.{3}".format(
             region_name, district_name, months[0], year
@@ -127,12 +125,10 @@ def getDTPData(region_id, region_name, district_id, district_name, months, year)
     print(log_text)
     write_log(log_text)
 
-    # 🔄 Постраничный перебор карточек
     while True:
         cards_dict["data"]["st"] = str(start)
         cards_dict["data"]["en"] = str(start + increment - 1)
 
-        # генерируем компактный JSON-запрос
         cards_dict_json = {
             "data": json.dumps(cards_dict["data"], separators=(',', ':')).encode('utf8').decode('unicode-escape')
         }
@@ -162,7 +158,6 @@ def getDTPData(region_id, region_name, district_id, district_name, months, year)
                 break
         else:
             if "Unexpected character (',' (code 44))" in r.text:
-                # карточки закончились
                 break
             else:
                 log_text = u"Отсутствуют данные для {0} ({1}) за {2}-{3}.{4}".format(
@@ -185,7 +180,6 @@ def getDTPInfo(data_root, year, months, regions, region_id="0"):
             result = re.match("([0-9]+)([^0-9]+)(.*)", file)
             regions_downloaded.append(result.group(2).strip())
     for region in regions:
-        # проверяем, что это Новосибирская область
         if region["name"] != "Новосибирская область":
             continue
         if region["name"] in regions_downloaded:
@@ -226,7 +220,6 @@ def getDTPInfo(data_root, year, months, regions, region_id="0"):
             log_text = u"Сохранены данные для {} за {}-{}.{}".format(region["name"], months[0], months[len(months) - 1], year)
             print(log_text)
             write_log(log_text)
-        # если запрошены данные только по одному региону
         if region["id"] == region_id:
             break
 
@@ -257,7 +250,7 @@ def getParamSplitted(param, command_name):
 def main():
     parser = createParser()
     namespace = parser.parse_args(sys.argv[1:])
-    data_root = "C:\\Users\\Дарья\\Desktop\\Полетайкин\\!Анализ на ПАЙТОНЕ\\курсач\\IAD-main\\IAD-main\\IAD"  # Измененный путь
+    data_root = "C:\\Users\\Дарья\\Desktop\\BigData\\!Анализ на ПАЙТОНЕ\\курсач\\IAD-main\\IAD-main\\IAD"
     if not os.path.exists(data_root):
         os.makedirs(data_root)
     if not os.path.exists(log_filename):
@@ -275,12 +268,10 @@ def main():
             log_text = u"Обновление справочника отменено"
             print(log_text)
             write_log(log_text)
-    #получаем год (если параметр опущен - текущий год)
     if namespace.year is not None:
         year = namespace.year
     else:
         year = datetime.now().year
-    #получаем месяц (если параметр опущен - все прошедшие месяцы года)
     if namespace.month is not None:
         months = [int(namespace.month)]
     else:
@@ -288,7 +279,6 @@ def main():
             months = list(range(1, datetime.now().month, 1))
         else:
             months = list(range(1, 13, 1))
-    # загружаем данные из справочника ОКАТО-кодов регионов и муниципалитетов
     filename = "regions.json"
     with codecs.open(filename, "r", "utf-8") as f:
         regions = json.load(f)

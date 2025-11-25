@@ -22,7 +22,7 @@ for root, dirs, files in os.walk(base_dir):
 if all_dataframes:
     combined_df = pd.concat(all_dataframes, ignore_index=True)
     print(f"Успешно объединено файлов: {len(all_dataframes)}")
-    save_path = r"C:\Users\Дарья\Desktop\BigData\!Анализ на ПАЙТОНЕ\курсач\IAD-main\IAD-main\IAD\Together_obl.xlsx"
+    save_path = r"C:\Users\Дарья\Desktop\BigData\!DATA\7 семестр\IAD_DTP\Together_obl.xlsx"
     combined_df.to_excel(save_path, index=False)
     print(f"Файл успешно сохранен по пути: {save_path}")
 else:
@@ -89,7 +89,7 @@ cur.close()
 conn.close()
 #ЗАПОЛНЕНИЕ таблиц Nabludenie_obl
 engine = create_engine('postgresql+psycopg2://razrab:puk5@localhost:5432/DTP')
-file_path = r"C:\Users\Дарья\Desktop\Полетайкин\!Анализ на ПАЙТОНЕ\курсач\IAD-main\IAD-main\IAD\Together_obl_cleaned.xlsx"
+file_path = r"C:\Users\Дарья\Desktop\BigData\!DATA\7 семестр\IAD_DTP\Together_obl_cleaned.xlsx"
 df = pd.read_excel(file_path)
 df = df.rename(columns={
     'Type_3': 'type_3_outward', 'Type_3.1': 'type_3_return',
