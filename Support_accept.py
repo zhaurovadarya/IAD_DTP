@@ -3,13 +3,10 @@ import pandas as pd
 from docx import Document
 from docx.shared import Inches, RGBColor
 
-# Загружаем результаты
 with open("analysis_results.pkl", "rb") as f:
     results = pickle.load(f)
 
-# --- Вспомогательная функция для заголовков ---
 def add_heading(doc, text, level=1):
-    """Добавляет заголовок с черным цветом; Heading 1 — полужирный"""
     p = doc.add_heading(text, level=level)
     if p.runs:
         run = p.runs[0]
@@ -18,9 +15,7 @@ def add_heading(doc, text, level=1):
             run.font.bold = True
     return p
 
-# --- Функция для добавления таблиц ---
 def add_df_table(doc, df):
-    """Надёжно добавляет DataFrame в DOCX, включая категориальные столбцы и NaN"""
     df = df.copy()
     for col in df.columns:
         df[col] = df[col].astype(str)
@@ -29,31 +24,24 @@ def add_df_table(doc, df):
     table = doc.add_table(rows=1, cols=len(df.columns))
     hdr_cells = table.rows[0].cells
 
-    # Заголовки
     for j, col in enumerate(df.columns):
         hdr_cells[j].text = str(col)
 
-    # Данные
     for i in range(df.shape[0]):
         row_cells = table.add_row().cells
         for j, col in enumerate(df.columns):
             value = df.iloc[i, j]
             row_cells[j].text = str(value) if value is not None else ""
 
-# --- Основная функция создания отчета ---
 def create_report(results):
 
     doc = Document()
     add_heading(doc, "Итоговый отчет анализа ДТП", level=1)
-
-    # =======================================================
-    # 1. Корреляционный анализ
-    # =======================================================
+    # Корреляционный анализ
     add_heading(doc, "1. Корреляционный анализ", level=1)
     cor = results.get('correlation', {})
 
-    if cor:
-        # --- ГОРОД ---
+    if cor: # city
         add_heading(doc, "1.1. Городские дороги", level=2)
         gor_plot = cor.get("gor_plot")
         gor_info = cor.get("gor_interpretation")
@@ -75,9 +63,7 @@ def create_report(results):
             )
         if gor_plot:
             doc.add_picture(gor_plot, width=Inches(6))
-
-        # --- ОБЛАСТЬ ---
-        add_heading(doc, "1.2. Областные дороги", level=2)
+        add_heading(doc, "1.2. Областные дороги", level=2) # obl
         obl_plot = cor.get("obl_plot")
         obl_info = cor.get("obl_interpretation")
         doc.add_paragraph(
@@ -99,9 +85,7 @@ def create_report(results):
         if obl_plot:
             doc.add_picture(obl_plot, width=Inches(6))
 
-    # =======================================================
-    # 2. Логистическая регрессия – город
-    # =======================================================
+    # Логистическая регрессия, город
     add_heading(doc, "2. Логистическая регрессия (городские наблюдения)", level=1)
     log_city = results.get("log_city", {}).get("log_city", {})
 
@@ -132,9 +116,7 @@ def create_report(results):
     add_heading(doc, "2.5. Распределение предсказанных вероятностей ДТП", level=2)
     doc.add_picture(log_city["prob_dist_plot"], width=Inches(6))
 
-    # =======================================================
-    # 3. Логистическая регрессия – область
-    # =======================================================
+    # Логистическая регрессия, область
     add_heading(doc, "3. Логистическая регрессия (областные наблюдения)", level=1)
     log_region = results.get("log_region", {}).get("log_region", {})
 
@@ -167,22 +149,18 @@ def create_report(results):
     add_heading(doc, "3.5. Распределение предсказанных вероятностей ДТП", level=2)
     doc.add_picture(log_region["prob_dist_plot"], width=Inches(6))
 
-    # =======================================================
-    # 4. Модели случайного леса
-    # =======================================================
+    # Модели случайного леса
     add_heading(doc, "4. Модели случайного леса", level=1)
     rf_block = results.get("random_forest", {})
     rf_dict = rf_block.get("rf", {})
     geo_df = rf_block.get("geo", pd.DataFrame())
     report_files = rf_block.get("report_files", {})
 
-    # Словарь читаемых названий моделей
     rf_name_map = {
         "rf_type": "Классификация вида ДТП",
         "rf_sev": "Регрессия тяжести ДТП",
         "rf_bin": "Бинарная классификация тяжести ДТП"
     }
-    # Top-10 признаков
     model_keys = ["rf_type", "rf_sev", "rf_bin"]
     for key in model_keys:
         df_rf = rf_dict.get(key)
@@ -194,7 +172,6 @@ def create_report(results):
             if img_file:
                 doc.add_picture(img_file, width=Inches(6))
 
-    # Диаграммы географического распределения
     add_heading(doc, "Диаграммы географического распределения", level=2)
     geo_plots = ["boxplot_type", "city_bar", "region_bar"]
     for plot_key in geo_plots:
@@ -202,7 +179,6 @@ def create_report(results):
         if img_file:
             doc.add_picture(img_file, width=Inches(6))
 
-    # Географические данные
     if isinstance(geo_df, pd.DataFrame) and not geo_df.empty:
         add_heading(doc, "Географические данные (первые строки)", level=2)
         add_df_table(doc, geo_df.head())
@@ -210,14 +186,9 @@ def create_report(results):
             "Интерактивная карта ДТП сохранена в файле DTP_heatmap.html. "
             "Её можно открыть в браузере для просмотра тепловой карты."
         )
-
-    # =======================================================
-    # СОХРАНЕНИЕ
-    # =======================================================
-    doc.save("Analysis_Report.docx")
-    print("✅ Итоговый отчет создан: Analysis_Report.docx")
+    doc.save("Report.docx")
+    print("Итоговый отчет создан: Report.docx")
     return doc
 
-# Запуск
 create_report(results)
 

@@ -105,7 +105,7 @@ plt.title("Сила связи факторов с пунктами ПДД", fon
 plt.tight_layout()
 plt.show()
 
-theme_counts = proposals_df['themes'].str.split(', ').explode().value_counts() # столбчатая диаграмма
+theme_counts = proposals_df['themes'].str.split(', ').explode().value_counts() #
 plt.figure(figsize=(14, 6))
 theme_counts.head(20).plot(kind='bar', color='lightgreen')
 plt.ylabel("Количество совпадений", fontsize=14)

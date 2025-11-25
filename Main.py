@@ -4,7 +4,6 @@ import Log_Regr
 import Log_Regr_obl
 import rand
 
-
 def main():
     all_results = {}
 
@@ -27,10 +26,6 @@ def main():
         "geo": geo_df,
         "report_files": rf_results_dict.get("report_files", {})
     }
-
-    # Сохраняем
-    with open("analysis_results.pkl", "wb") as f:
-        pickle.dump(all_results, f)
 
     print("\n Все этапы анализа выполнены. Результаты сохранены в analysis_results.pkl")
     return all_results

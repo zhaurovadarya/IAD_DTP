@@ -78,7 +78,7 @@ def create_recommendations(assoc: pd.DataFrame, bayes: pd.DataFrame, fuzzy: pd.D
             print("WARNING: В Fuzzy_PDD.csv отсутствуют ожидаемые столбцы ('pdd_id','severity_score_fuzzy').")
     return recommendations
 
-def save_docx(recommendations, filename="PDD_Recommendations.docx"):
+def save_docx(recommendations, filename="PDD_Recomd.docx"):
     if not recommendations:
         print("No recommendations to save.")
         return False
@@ -108,7 +108,6 @@ def save_docx(recommendations, filename="PDD_Recommendations.docx"):
         for idx, rec in enumerate(items, start=1):
             p = doc.add_paragraph()
             p.style = doc.styles['Normal']
-            # нумерованный блок: "1) [pdd_id]" жирный первая часть
             run_num = p.add_run(f"{idx}) ")
             run_num.font.bold = True
             run_num.font.color.rgb = RGBColor(0,0,0)
@@ -123,7 +122,7 @@ def save_docx(recommendations, filename="PDD_Recommendations.docx"):
     # Сохранение
     try:
         doc.save(filename)
-        print(f"📄 Документ успешно сохранён: {filename}")
+        print(f"Документ успешно сохранён: {filename}")
         return True
     except Exception as e:
         print(f"ERROR: Не удалось сохранить документ: {e}")
